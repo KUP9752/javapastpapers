@@ -3,23 +3,35 @@ import java.util.Arrays;
 public class Util {
 
     private static int letterToIndex(char letter) {
-        return -1; // TODO delete this line for Question 1a.
+        // accepts letters and returns their index:
+        assert Character.isAlphabetic(letter);
+        letter = Character.toUpperCase(letter);
+        return Character.getNumericValue(letter) - Character.getNumericValue('A');
     }
 
     private static int numberToIndex(char number) {
-        return -1; // TODO: delete this line for Question 1b.
+        assert number <= 9; // number always greater than 0
+        return Character.getNumericValue(number);
     }
 
     public static Coordinate parseCoordinate(String s) {
-        return null; // TODO: delete this line for Question 1c.
+        assert s.length() == 2; // other assertions are done in the toIndex functions
+        return new Coordinate(letterToIndex(s.charAt(0)), numberToIndex(s.charAt(1)));
     }
 
     public static Piece hideShip(Piece piece) {
-        return null; // TODO: delete this line for Question 1d.
+        return (piece == Piece.SHIP) ? Piece.WATER : piece;
     }
 
     public static void hideShips(Piece[][] grid) {
-        // TODO: Question 1e.
+        int rows = grid.length;
+        int cols = grid[0].length;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                grid[r][c] = hideShip(grid[r][c]);
+            }
+        }
+
     }
 
     public static Piece[][] deepClone(Piece[][] input) {
@@ -28,5 +40,12 @@ public class Util {
             output[i] = Arrays.copyOf(input[i], input[i].length);
         }
         return output;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(letterToIndex('B'));
+        System.out.println(numberToIndex('2'));
+        System.out.println(parseCoordinate("D3"));
+        System.out.println(parseCoordinate("H1"));
     }
 }
