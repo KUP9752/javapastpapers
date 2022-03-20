@@ -18,8 +18,12 @@ public class CharNode {
         return chr;
     }
 
-    public boolean getFlag() {
+    public boolean isWord() {
         return isWord;
+    }
+
+    public void setFlag(boolean newState) {
+        isWord = newState;
     }
 
     public List<CharNode> getChildren() {
