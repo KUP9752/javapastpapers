@@ -24,7 +24,16 @@ public class Executor {
 		List<Integer> history = new LinkedList<Integer>();
 		boolean deadlockOccurred = false;
 
-		// TODO: Add code here to complete Question 3
+		while (!program.isTerminated()) {
+			try {
+				int threadId = scheduler.chooseThread(program);
+				program.step(threadId);
+				history.add(threadId);
+			} catch (DeadlockException e) {
+				deadlockOccurred = true;
+				break;
+			}
+		}
 
 		StringBuilder result = new StringBuilder();
 		result.append("Final state: " + program + "\n");
