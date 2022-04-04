@@ -1,24 +1,14 @@
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AutoPlayer extends AbstractPlayer {
-    private HashMap<Rank, Long> map;
+    private HashMap<Rank, Integer> map;
 
     AutoPlayer(CardPile left, CardPile right, String name) {
         super(left, right, name);
     }
 
     private Optional<Rank> findMajority() {
-        map = Arrays.stream(cards).map(Card::getRank)
-                .collect(Collectors.groupingBy(
-                    Function.identity(),
-                    HashMap::new,
-                    Collectors.counting())
-                );
-
 
         for (Card card : cards) {
             Rank rank = card.getRank();
@@ -27,11 +17,43 @@ public class AutoPlayer extends AbstractPlayer {
             }
             map.putIfAbsent(rank, 1);
         }
-        map.entrySet().stream().max()
+        Integer max = map.values().stream().max(Integer::compare).get();
+
+        if (max > 1) { //there is some majority
+            List<Rank> majorityRanks = map.entrySet().stream().filter(e -> Objects.equals(e.getValue(), max))
+                    .map(Map.Entry::getKey).toList();
+            Collections.shuffle(majorityRanks);
+            return Optional.of(majorityRanks.get(0)); // randomly selects a majority
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private int randomIndex(Optional<Rank> toKeep){
+        Rank toDiscard;
+        List<Rank> remRanks;
+        if (toKeep.isPresent()) {
+            remRanks = new ArrayList<Rank>(map.keySet().stream()
+                    .filter(key -> !key.equals(toKeep.get()))
+                    .toList());
+        } else {
+            remRanks = map.keySet().stream().toList();
+        }
+        // nogt present = no majority
+
+        Collections.shuffle(remRanks);
+        toDiscard = remRanks.get(0);
+        return Arrays.stream(cards).map(Card::getRank).toList()
+                .lastIndexOf(toDiscard);
+        // throw one of the same ranks, suit is not important
+
+
 
     }
+
     @Override
     protected int selectCard() {
+        return randomIndex(findMajority());
 
     }
 
