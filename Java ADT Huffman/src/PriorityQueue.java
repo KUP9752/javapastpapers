@@ -28,12 +28,13 @@ public class PriorityQueue<E extends Comparable<E>> implements PriorityQueueInte
 	public void add(E newEntry) throws PriorityQueueException {
 	// post: Adds a new entry to the priority queue according to 
         // the priority value.
+
 		if (size < max_size) {
 			items[size] = newEntry;
 			percolateUp(size);
 			size++;
-		}
-		throw new PriorityQueueException("Queue Full!");
+		} else throw new PriorityQueueException("Queue Full!");
+
 	}
 
 	private void percolateUp(int c) {

@@ -1,3 +1,6 @@
+import java.util.HashSet;
+import java.util.Set;
+
 public class Huffman {
 
 	private HuffmanData[] leafEntries;
@@ -33,15 +36,60 @@ public class Huffman {
 
 	public void createHuffmanTree() {
 	// Process PriorityQueue pq until there is a complete HuffmanTree
-	// ADD YOUR CODE HERE
+		while (pq.getSize() > 1) {
+			BinaryTree<HuffmanData> first = (BinaryTree<HuffmanData>) pq.removeMin();
+			BinaryTree<HuffmanData> second = (BinaryTree<HuffmanData>) pq.removeMin();
+			// to ensure leftChild < rightChild
+			BinaryTree<HuffmanData> leftChild, rightChild;
+
+			if (first.compareTo(second) < 0 ) {
+				leftChild = first;
+				rightChild = second;
+			} else {
+				leftChild = second;
+				rightChild = first;
+			}
+
+			int freq = leftChild.getRootData().getFrequency() + rightChild.getRootData().getFrequency();
+			BinaryTree<HuffmanData> newRoot =
+					new BinaryTree<>(
+						new HuffmanData(freq),
+						leftChild,
+						rightChild
+					);
+			pq.add(newRoot);
+		}
+		huffmanTree = pq.getMin();
 	}
 
 	public void printCode() {
-	// ADD YOUR CODE HERE. 
+		String tracker = "";
+		printCodeProcedure(tracker, huffmanTree);
 	}
 
 	private void printCodeProcedure(String code, BinaryTreeInterface<HuffmanData> tree) {
-	// Print out a complete HuffmanTree 
-        // ADD YOUR CODE HERE
+	// Print out a complete HuffmanTree
+		if (tree != null) {
+			StringBuilder sb = new StringBuilder();
+			if (tree.isEmpty())
+				System.out.println("Tree is Empty");
+			else {
+				HuffmanData data = tree.getRootData();
+				if (data.getSymbol() != '\u0000') {
+					sb.append(data.getSymbol())
+							.append(": ")
+							.append(code);
+					System.out.println(sb);
+				}
+				//left
+				printCodeProcedure(code.concat("0"), tree.getLeftSubtree());
+				//right
+				printCodeProcedure(code.concat("1"), tree.getRightSubtree());
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+
 	}
 }
