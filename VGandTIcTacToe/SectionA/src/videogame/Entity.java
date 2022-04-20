@@ -13,12 +13,19 @@ public abstract class Entity {
 
 	public final boolean isAlive() {
 		/* TODO: Implement as part of Section A Question 2 */
-		return false;
+		return lifePoints == 0;
+	}
+
+	//returns the points deducted
+	public final int reduceLifePoints(int damageAmount) {
+		assert damageAmount >= 0;
+		int pointsDeducted  = Math.min(damageAmount, lifePoints);
+		lifePoints = lifePoints - pointsDeducted;
+		return pointsDeducted;
 	}
 	
 	public final int applySpell(SpellCaster spellCaster) {
-		/* TODO: Implement as part of Section A Question 2 */
-		return -1;
+		return propagateDamage(spellCaster.getStrength());
 	}
 	
 	protected abstract int propagateDamage(int damageAmount);
