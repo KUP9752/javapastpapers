@@ -18,7 +18,9 @@ public class GenericList<T> implements GenericListInterface<T>{
 	}// end isEmpty
 
 	//post: Returns the number of items in the list
-	public int size() {return numItems;}// end size
+	public int size() {
+		return numItems;
+	}// end size
 
 	//post: Auxiliary method for finding a node at a given position in the list
 	private ListNode<T> find(int pos){
@@ -31,22 +33,48 @@ public class GenericList<T> implements GenericListInterface<T>{
 
 	//post: Returns the item stored in the node at a given position in the list
 	public T get(int pos) throws ListIndexOutOfBoundsException{
-		if (pos >= 1 && pos <= numItems)
-		{ ListNode<T> curr = find(pos);
-		  return curr.getItem();
+		if (pos >= 1 && pos <= numItems) {
+			ListNode<T> curr = find(pos);
+		  	return curr.getItem();
 		}
-		else {throw new ListIndexOutOfBoundsException("position out of range in get method of a list");}
+		else {
+			throw new ListIndexOutOfBoundsException("position out of range in get method of a list");
+		}
 	}// end get
 
 	
 	//YOU ARE ASKED TO IMPLEMENT THIS METHOD
-	//post: Adds the given item at the given position in the list. It throughs an exception if the 
+	//post: Adds the given item at the given position in the list. It throws an exception if the
 	//      position is out of bound.
 	public void add(int pos, T item) throws ListIndexOutOfBoundsException{
-		
-	}// end add
+		ListNode<T> newNode = new ListNode<>(item);
+		if (isEmpty()){
+			head = newNode;
+			numItems++;
+		} else {
+			if (pos >= 1 && pos <= numItems) { // can't insert anywhere else
+				ListNode<T> insertAfter = findNode(pos);
+				ListNode<T> next = insertAfter.getNext();
+				insertAfter.setNext(newNode); //our node gets in correct location
+				newNode.setNext(next);  //readjust next to keep sequence
+				numItems++; // new addition hence increment
 
-	//post: Removes the item at the given position in the list. It throughs an exceptions if the
+			} else {
+				throw new ListIndexOutOfBoundsException("position out of range in get method of a list");
+			}
+		}
+	}// end add
+	private ListNode<T> findNode(int n) {
+		ListNode<T> node = head;
+		int count = 1;
+		while (count < n - 1) {
+			count++;
+			node = node.getNext();
+		}
+		return node;
+	}
+
+	//post: Removes the item at the given position in the list. It throws an exceptions if the
 	//      position is out of bound.
 	public void remove(int pos) throws ListIndexOutOfBoundsException{
 			if (pos >=1 && pos <= numItems){

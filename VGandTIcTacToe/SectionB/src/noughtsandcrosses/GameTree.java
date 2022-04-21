@@ -1,6 +1,7 @@
 package noughtsandcrosses;
 
 import java.util.Iterator;
+import java.util.stream.IntStream;
 
 public class GameTree implements GameTreeInterface {
 	
@@ -18,13 +19,20 @@ public class GameTree implements GameTreeInterface {
 	//post: Returns the number of boards stored in a game tree.
 	//	    It uses a recursive auxiliary method.
 	public int size(){
-		return sizeTree(root)+1;		
+		return sizeTree(root)+1;
 	}
 	
 	//YOU ARE ASKED TO IMPLEMENT THIS METHOD
 	//post: Returns the number of boards stored in a game tree, excluded the root.
 	private int sizeTree(GameTreeNode node){
-		
+		int totalOfChildren = 0;
+		//if (node.numberOfChildren() == 0) return 0;
+		Iterator<GameTreeNode> it = node.getChildren().iterator();
+		if (it.hasNext()) {
+			totalOfChildren += sizeTree(it.next());
+		}
+
+		 return 1 + totalOfChildren;
 	}	
 	
 	//post: Expands the game tree fully by adding all possible boards in the game.
@@ -38,6 +46,22 @@ public class GameTree implements GameTreeInterface {
 	//      all the possible moves that the computer and the user player
 	//      can make, until the game is finished, from the given node onwards.
 	private void expandTree(GameTreeNode node){
+		Board board = node.getBoard();
+		if (!board.isFinished()) {
+			char mark = board.getTurn();
+			IntStream.range(1, 10).forEach(
+					i -> {
+						if (board.getMark(i) == Board.EMPTY) {
+							Board newBoard = board.makeCopy();
+							newBoard.setMark(i, mark);
+							newBoard.setLastMarkPosition(i);
+							GameTreeNode newNode = new GameTreeNode(newBoard);
+							node.getChildren().add(1, newNode);
+							expandTree(newNode);
+						}
+					}
+			);
+		}
 	 	
 	}
 	
