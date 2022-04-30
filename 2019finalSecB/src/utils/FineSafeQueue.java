@@ -2,6 +2,7 @@ package utils;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 
 public class FineSafeQueue<E> implements Queue<E> {
   private LockNode<E> head;
@@ -15,31 +16,32 @@ public class FineSafeQueue<E> implements Queue<E> {
   }
 
   public boolean isEmpty() {
-      return head == null;
+      return size() == 0;
   }
 
   @Override
   public void push(E element) {
-    LockNode<E> newTail = new LockNode(element);
+    LockNode<E> newNode = new LockNode<>(element);
+    LockNode<E> oldTail = tail;
+    try {
+      oldTail.lock();
+      oldTail.setNext(newNode);
 
-    if (isEmpty()) {
-      head = newTail;
-      tail = newTail;
-    } else {
-        LockNode<E> oldTail = tail;
-        try {
-          oldTail.lock();
-          oldTail.setNext(newTail);
-        } finally {
-          oldTail.unlock();
-        }
+      if (isEmpty()) { //must be head
+        head = newNode;
+      }
+      tail = newNode;
+
+      size.getAndIncrement();
+    } finally {
+      oldTail.unlock();
     }
-    size.getAndIncrement();
   }
 
   @Override
   public Optional<E> pop() {
     if (isEmpty()) return Optional.empty();
+
     LockNode<E> toPop = head;
     try {
       toPop.lock();

@@ -15,7 +15,7 @@ public class UnsafeQueue<E> implements Queue<E> {
   }
 
 
-  protected void imcrementSize() {
+  protected void incrementSize() {
     size++;
   }
 
@@ -37,7 +37,7 @@ public class UnsafeQueue<E> implements Queue<E> {
     } else {
       oldTail.setNext(tail);
     }
-    imcrementSize();
+    incrementSize();
 
   }
 

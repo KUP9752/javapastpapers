@@ -1,6 +1,7 @@
 package domain.agents;
 
 import domain.MarketPlace;
+import domain.goods.PlasticGood;
 
 public class Consumer extends Agent {
 
@@ -10,6 +11,15 @@ public class Consumer extends Agent {
 
   @Override
   protected void doAction() {
-    //TODO for Question 3
+    marketPlace.buyPlasticGood().ifPresent(this::waitAndDispose);
+//
+//            (value) -> {
+//              this.think();
+//              marketPlace.disposePlasticGood(value);
+//            });
+  }
+  private void waitAndDispose(PlasticGood good) {
+    think();
+    marketPlace.disposePlasticGood(good);
   }
 }

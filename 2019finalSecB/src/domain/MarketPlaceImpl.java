@@ -2,6 +2,8 @@ package domain;
 
 import domain.goods.PlasticGood;
 import domain.goods.RawPlastic;
+import utils.CoarseSafeQueue;
+
 import java.util.Optional;
 
 
@@ -9,41 +11,51 @@ public class MarketPlaceImpl implements MarketPlace {
 
   private final boolean DEBUG_MESSAGES = true;
 
+  private final CoarseSafeQueue<RawPlastic> rePlastics = new CoarseSafeQueue<>();
+  private final CoarseSafeQueue<RawPlastic> newPlastics = new CoarseSafeQueue<>();
+  private final CoarseSafeQueue<PlasticGood> plasticGoods = new CoarseSafeQueue<>();
+  private final CoarseSafeQueue<PlasticGood> disposedGoods = new CoarseSafeQueue<>();
+
+
+
+
   public void sellRawPlastic(RawPlastic plasticItem) {
     if (DEBUG_MESSAGES) {
       System.out
           .println("Thread: " + Thread.currentThread().getId() + " - Sell plastic: " + plasticItem);
     }
 
-    //TODO for Question 2
+    if (plasticItem.origin == RawPlastic.Origin.RECYCLED) rePlastics.push(plasticItem);
+    else newPlastics.push(plasticItem);
+
   }
 
   public Optional<RawPlastic> buyRawPlastic() {
-    //TODO for Question 2
-    return Optional.empty();
+
+    if (rePlastics.size() !=0) return rePlastics.pop();
+    //else
+    return newPlastics.pop();
   }
 
   public void sellPlasticGood(PlasticGood good) {
     if (DEBUG_MESSAGES) {
       System.out.println("Thread: " + Thread.currentThread().getId() + " - Sell good: " + good);
     }
-    //TODO for Question 2
+    plasticGoods.push(good);
   }
 
   public Optional<PlasticGood> buyPlasticGood() {
-    //TODO for Question 2
-    return Optional.empty();
+    return plasticGoods.pop();
   }
 
   public void disposePlasticGood(PlasticGood good) {
     if (DEBUG_MESSAGES) {
       System.out.println("Thread: " + Thread.currentThread().getId() + " - Dispose good: " + good);
     }
-    //TODO for Question 2
+    disposedGoods.push(good);
   }
 
   public Optional<PlasticGood> collectDisposedGood() {
-    //TODO for Question 2
-    return Optional.empty();
+    return disposedGoods.pop();
   }
 }

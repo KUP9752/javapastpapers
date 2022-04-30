@@ -14,7 +14,7 @@ public class ThreadSafeQueueStressTest {
 
   @Test
   public void minimalStressTest() {
-    final Queue<Integer> safeQueueToTest = new SafeQueue<>();
+    final Queue<Integer> safeQueueToTest = new CoarseSafeQueue<>();
 
     Thread threads[] = new Thread[NUM_THREADS];
 

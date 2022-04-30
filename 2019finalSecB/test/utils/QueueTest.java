@@ -13,7 +13,7 @@ public class QueueTest {
 
   @Before
   public void setupConcreteImplementation() {
-    queue = new SafeQueue<>();
+    queue = new FineSafeQueue<>();
   }
 
 

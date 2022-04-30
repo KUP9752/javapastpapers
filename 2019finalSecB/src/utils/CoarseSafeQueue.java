@@ -15,7 +15,7 @@ public class CoarseSafeQueue<E> extends UnsafeQueue<E>{
     }
 
     @Override
-    protected void imcrementSize() {
+    protected void incrementSize() {
         size.incrementAndGet();
     }
 
@@ -26,7 +26,7 @@ public class CoarseSafeQueue<E> extends UnsafeQueue<E>{
 
     @Override
     public boolean isEmpty() {
-        return head == null;
+        return size() == 0;
     }
 
     @Override

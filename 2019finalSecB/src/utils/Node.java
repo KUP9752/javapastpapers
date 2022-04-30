@@ -7,7 +7,11 @@ public class Node<E> {
 
     public Node(E item) {
         this.item = item;
-        this.next = new Node(null);
+        if (item != null) {
+            this.next = new Node(null);
+        } else {
+            this.next = null;
+        }
     }
 
     public Node(E item, Node<E> next) {
