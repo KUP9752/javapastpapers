@@ -49,6 +49,10 @@ public class GraphNode {
 	public void setDegree(int degree) {
 		this.degree = degree;
 	}
+
+	public void decrementDegree() {
+		this.degree--;
+	}
 	
 	
 }

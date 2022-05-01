@@ -21,7 +21,12 @@ public class Graph implements GraphInterface{
 	//post: It sets the degree of each node to be equal to the number of incoming 
 	//      edges of that node. 
 	private void setIncomingDegreeRecursively(GraphNode node) {
-		
+		node.setDegree(node.getIncomingEdges().size());
+		GenericList<GraphEdge> outs = (GenericList<GraphEdge>) node.getOutgoingEdges();
+		for (GraphEdge edge : outs) { // uses the iterator of generic list
+			setIncomingDegreeRecursively(edge.getEndPoint());
+		}
+
 	}
 
 	//YOU ARE ASKED TO IMPLEMENT THIS METHOD
@@ -32,7 +37,28 @@ public class Graph implements GraphInterface{
 	//      another node indicates that there is a path from the former node to the latter 
 	//      node in the event-node graph.   
 	private QueueInterface<GraphNode> topologicalSort( ) {
-		
+		Queue<GraphNode> temp =  new Queue<>();
+		Queue<GraphNode> result =  new Queue<>();
+
+		setIncomingDegree();
+		temp.enqueue(start);
+
+		while(!temp.isEmpty()) {
+			GraphNode node = temp.dequeue();
+			result.enqueue(node);
+
+			GenericList<GraphEdge> outs = (GenericList<GraphEdge>) node.getOutgoingEdges();
+			for (GraphEdge edge : outs) {
+				GraphNode childNode = edge.getEndPoint();
+				childNode.decrementDegree();
+
+				if (childNode.getDegree() == 0) {
+					temp.enqueue(childNode);
+				}
+			}
+
+		}
+		return result;
 	}
 	
 	
@@ -52,10 +78,18 @@ public class Graph implements GraphInterface{
 		
 		//YOU ARE ASKED TO IMPLEMENT THIS WHILE LOOP 
 		while (!sortedNodes.isEmpty()) {
-		
-		
-		
-		}
+			List<Integer> totalTime = new ArrayList<>();
+			GraphNode node = sortedNodes.dequeue();
+			GenericList<GraphEdge> ins = (GenericList<GraphEdge>) node.getIncomingEdges();
+
+			for (GraphEdge edge : ins) {
+				GraphNode startPoint = edge.getStartPoint();
+				totalTime.add(startPoint.EarliestCompletionTime() + edge.getTaskDuration());
+			}
+			int nodeEC = totalTime.stream().reduce(Integer::max).get(); //by default a value exist, well-formed graph
+			node.setEarliestCompletionTime(nodeEC);
+
+			}
 	
 	}
 	
