@@ -22,7 +22,7 @@ public class WeightedNineTailsProblem {
 
 			System.out.println("Finished[Y/N]?");
 			String decision = input.nextLine();
-			if (decision.toUpperCase().equals("Y")) {
+			if (decision.equalsIgnoreCase("Y")) {
 				break;
 			}
 		}

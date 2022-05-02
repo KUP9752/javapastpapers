@@ -52,9 +52,28 @@ public class PriorityQueue<T extends Comparable<T>> implements
 	 * @throws PQException if the priority queue is full
 	 */
 	public void add(T newEntry) throws PQException {
-	    // TODO: Implement this method for Question 2
+	    if (size >= max_size) throw new PQException("max PQ size reached");
+		items[size] = newEntry;
+		size++;
+		percolateUp(size - 1);
+
 	}
 
+	private void swap(int i1, int i2) {
+		T temp = items[i1];
+		items[i1] = items[i2];
+		items[i2] = temp;
+	}
+
+	private void percolateUp(int index) {
+		if (index > 0) {
+			int parent = (index - 1) / 2;
+			if (items[index].compareTo(items[parent]) < 0) {//parent's lareger in value
+				swap(index, parent);
+				percolateUp(parent);
+			}
+		}
+	}
 	/**
 	 * Removes the element with highest priority.
 	 */
@@ -71,7 +90,24 @@ public class PriorityQueue<T extends Comparable<T>> implements
 	 * <strong>Implement this method for Question 2</strong>
 	 */
 	private void PQRebuild(int root) {
-	    // TODO: Implement this method for Question 2
+	    int left = root * 2 + 1;
+		int right = root * 2 + 2;
+		int smallerSub;
+		if (left <= size) {
+			if (left == size) { //no right heap
+				smallerSub = left;
+			} else {
+				if (items[left].compareTo(items[right]) < 0) {
+					smallerSub = left;
+				} else {
+					smallerSub = right;
+				}
+			}
+			if (items[root].compareTo(items[smallerSub]) > 0) {
+				swap(root, smallerSub);
+				PQRebuild(smallerSub);
+			}
+		}
 	}
 
 	public Iterator<Object> iterator() {

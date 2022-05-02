@@ -1,3 +1,5 @@
+import java.util.stream.IntStream;
+
 /**
   * You must implement the <code>constructGraph</code> and <code>constructMinimumSpanningTree</code> methods.
   *
@@ -24,7 +26,21 @@ public class NineTailsWeightedGraph {
 	 * <strong>Implement this method for Question 3</strong>
 	 */
 	private void constructGraph() {
-	    // TODO: Implement this method for Question 3
+	    configurations = new ListArrayBased<>();
+		IntStream.range(1, NUM_CONFIGURATIONS + 1).forEach( //includes numconfigs
+				i -> configurations.add(i, new PriorityQueue<>()));
+
+		IntStream.range(1, NUM_CONFIGURATIONS + 1).forEach(
+				i -> {
+					PriorityQueueInterface<WeightedEdge> edges = generateParents(i);
+					while (!edges.isEmpty()) {
+						WeightedEdge edge = edges.peek();
+						configurations.get(edge.child).add(edge);
+						edges.remove();
+					}
+				}
+		);
+
 	}
 
 	/**
@@ -225,7 +241,44 @@ public class NineTailsWeightedGraph {
 		
 		ListInterface<PriorityQueueInterface<WeightedEdge>> confCopy = getConfigurationsCopy();
 
-		// TODO: Implement the rest of this method for Question 4
+		visited.add(1, TERMINAL_CONFIGURATION_INDEX);
+		costs[TERMINAL_CONFIGURATION_INDEX] = 0;
+
+
+		while (visited.size() < NUM_CONFIGURATIONS) {
+			int u = 1;
+			int v = 1;
+			int c = Integer.MAX_VALUE;
+
+			for (int i = 1; i < visited.size(); i++) {
+				int u0 = visited.get(i);
+				PriorityQueueInterface<WeightedEdge> conf = confCopy.get(u0);
+				if (!conf.isEmpty()) {
+					WeightedEdge edge = conf.peek();
+					if (edge != null) {
+						int v0 = edge.parent;
+						int c0 = edge.weight + costs[u0];
+						while (visited.contains(v0) && !conf.isEmpty()) {
+							edge = conf.peek();
+							if (edge != null) {
+								v0 = edge.parent;
+								c0 = edge.weight + costs[u0];
+								conf.remove();
+							}
+						}
+						if (c0 + costs[u0] < c) {
+							u = u0;
+							v = v0;
+							c = c0;
+						}
+					}
+				}
+			}
+			visited.add(visited.size() + 1, v);
+			costs[v] = c;
+			nextMoves[v] = u;
+		}
+
 	}
 
 	// *** helper classes
