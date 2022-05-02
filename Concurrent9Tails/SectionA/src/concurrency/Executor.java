@@ -24,14 +24,13 @@ public class Executor {
 		List<Integer> history = new LinkedList<Integer>();
 		boolean deadlockOccurred = false;
 
-		while (!program.isTerminated()) {
+		while(!program.isTerminated() && !deadlockOccurred) {
 			try {
-				int threadId = scheduler.chooseThread(program);
-				program.step(threadId);
-				history.add(threadId);
-			} catch (DeadlockException e) {
+				int id = scheduler.chooseThread(program);
+				program.step(id);
+				history.add(id);
+			} catch (DeadlockException e){
 				deadlockOccurred = true;
-				break;
 			}
 		}
 
@@ -41,6 +40,15 @@ public class Executor {
 		result.append("Termination status: "
 				+ (deadlockOccurred ? "deadlock" : "graceful") + "\n");
 		return result.toString();
+	}
+
+//should also overwrite the hashCode method for complete correction
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Executor otherExe) {
+			return program.toString().equals(otherExe.program.toString());
+		}
+		return false;
 	}
 
 	// An incorrect attempt at overriding the equals method

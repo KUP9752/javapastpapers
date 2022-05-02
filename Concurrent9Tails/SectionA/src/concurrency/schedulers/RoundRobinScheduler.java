@@ -5,32 +5,34 @@ import concurrency.DeadlockException;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RoundRobinScheduler implements Scheduler{
-
     private boolean firstCall = true;
-    private int lastThreadId;
+    private int lastId;
+
+    protected int schedulingAlgorithm(ConcurrentProgram program, Set<Integer> ids) {
+        if (firstCall) {
+            firstCall = false;
+            lastId = ids.stream().reduce(Integer::min).get();
+        } else {
+            Optional<Integer> optId = ids.stream().filter(id -> id > lastId)
+                    .min(Integer::compare);
+
+            lastId = optId.orElse(ids.stream().min(Integer::compare).get());
+        }
+        return lastId;
+
+    }
 
 
     @Override
-    public int chooseThread(ConcurrentProgram program)
-        throws DeadlockException {
-
+    public int chooseThread(ConcurrentProgram program) throws DeadlockException {
         Set<Integer> ids = program.getEnabledThreadIds();
-        if (ids.isEmpty()) {
-            throw new DeadlockException();
-        }
+        if (ids.isEmpty()) throw new DeadlockException();
 
-        if (firstCall) {
-//            enabled threads cannot be empty at this point
-            firstCall = false;
-            lastThreadId = ids.stream().min(Integer::compare).get();
-        } else {
-            Optional<Integer> optId =  ids.stream().filter(id -> id > lastThreadId)
-                    .min(Integer::compare);
-            lastThreadId = optId.orElseGet(
-                    () -> ids.stream().min(Integer::compare).get());
-        }
-        return lastThreadId;
+        return schedulingAlgorithm(program, ids);
+
     }
 }
+

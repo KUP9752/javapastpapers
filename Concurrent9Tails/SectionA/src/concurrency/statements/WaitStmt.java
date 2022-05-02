@@ -3,14 +3,16 @@ package concurrency.statements;
 import concurrency.Store;
 import concurrency.expressions.Expr;
 
-public class WaitStmt implements Stmt{
-    Expr lhs;
-    Expr rhs;
+public class WaitStmt implements Stmt {
+
+    private final Expr lhs;
+    private final Expr rhs;
 
     public WaitStmt(Expr lhs, Expr rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
     }
+
 
     @Override
     public boolean isEnabled(Store store) {
@@ -19,6 +21,6 @@ public class WaitStmt implements Stmt{
 
     @Override
     public void execute(Store store) {
-        //no effect
+        //has no effect
     }
 }
