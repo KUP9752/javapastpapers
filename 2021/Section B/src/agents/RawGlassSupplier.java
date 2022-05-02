@@ -1,7 +1,10 @@
 package agents;
 
 import domain.Agent;
+import goods.RawGlass;
 import market.Market;
+
+import static domain.producttypes.RawMaterial.Origin.NEW;
 
 public class RawGlassSupplier extends Agent {
 
@@ -11,6 +14,6 @@ public class RawGlassSupplier extends Agent {
 
   @Override
   public void doAction() {
-    // TODO Q2
+    market.sellRawGlass(new RawGlass(NEW), this);
   }
 }

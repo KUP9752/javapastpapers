@@ -1,7 +1,9 @@
 package market;
 
+import datastructures.CoarseStockImpl;
 import domain.Agent;
 import domain.producttypes.Product;
+import domain.producttypes.RawMaterial;
 import goods.Laptop;
 import goods.RawAluminium;
 import goods.RawGlass;
@@ -9,47 +11,75 @@ import java.util.Optional;
 
 public class MarketImpl implements Market {
 
+  private final CoarseStockImpl<RawGlass> glassStock = new CoarseStockImpl<>();
+  private final CoarseStockImpl<RawGlass> reGlassStock = new CoarseStockImpl<>();
+
+  private final CoarseStockImpl<RawAluminium> alumStock = new CoarseStockImpl<>();
+  private final CoarseStockImpl<RawAluminium> reAlumStock = new CoarseStockImpl<>();
+
+
+  private final CoarseStockImpl<Laptop> laptopStock = new CoarseStockImpl<>();
+  private final CoarseStockImpl<Laptop> disposedLaptopStock = new CoarseStockImpl<>();
+
+  private final CoarseStockImpl<Product> disposedProduct = new CoarseStockImpl<>();
+
+
+
   @Override
   public void sellRawAluminium(RawAluminium item, Agent agent) {
-    // TODO Q2
+    switch (item.origin) {
+      case NEW -> alumStock.push(item, agent);
+      case RECYCLED -> reAlumStock.push(item, agent);
+    }
   }
 
   @Override
   public Optional<RawAluminium> buyRawAluminium() {
-    // TODO Q2
-    return null;
+    Optional<RawAluminium> item;
+    if (reAlumStock.isEmpty()) {
+      item = alumStock.pop();
+    } else {
+      item = reAlumStock.pop();
+    }
+    return item;
   }
 
   @Override
   public void sellRawGlass(RawGlass item, Agent agent) {
-    // TODO Q2
+    switch (item.origin) {
+      case NEW -> glassStock.push(item, agent);
+      case RECYCLED -> reGlassStock.push(item, agent);
+    }
   }
 
   @Override
   public Optional<RawGlass> buyRawGlass() {
-    // TODO Q2
-    return null;
+    Optional<RawGlass> item;
+    if (glassStock.isEmpty()) {
+      item = glassStock.pop();
+    } else {
+      item = reGlassStock.pop();
+    }
+    return item;
   }
 
   @Override
   public void sellLaptop(Laptop item, Agent agent) {
-    // TODO Q2
+    laptopStock.push(item, agent);
   }
 
   @Override
   public Optional<Laptop> buyLaptop() {
-    // TODO Q2
-    return null;
+    return laptopStock.pop();
   }
 
   @Override
   public void disposeLaptop(Laptop item, Agent agent) {
-    // TODO Q2
+    disposedProduct.push(item, agent);
   }
 
   @Override
   public Optional<Product> collectDisposedGood() {
-    // TODO Q2
-    return null;
+    return disposedProduct.pop();
   }
 }

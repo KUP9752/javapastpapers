@@ -11,6 +11,10 @@ public class Consumer extends Agent {
 
   @Override
   public void doAction() {
-    // TODO Q2
+    market.buyLaptop().ifPresent(
+            (laptop) -> {
+            think();
+            market.disposeLaptop(laptop, this);
+    });
   }
 }
