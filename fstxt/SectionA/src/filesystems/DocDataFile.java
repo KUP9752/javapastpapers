@@ -11,9 +11,10 @@ public final class DocDataFile extends DocFile {
     this.contents = contents;
   }
 
+
   @Override
   public int getSize() {
-    return getName().length() + contents.length;
+    return this.getName().length() + contents.length;
   }
 
   @Override
@@ -28,7 +29,7 @@ public final class DocDataFile extends DocFile {
 
   @Override
   public DocDirectory asDirectory() {
-    throw new UnsupportedOperationException("Cannot represent a data file as a directory!");
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -38,16 +39,13 @@ public final class DocDataFile extends DocFile {
 
   @Override
   public DocFile duplicate() {
-    return new DocDataFile(getName(), Arrays.copyOf(contents, contents.length));
+    return new DocDataFile(getName(), contents);
   }
 
-  public boolean containsByte(byte checkByte) {
-    for (byte content : contents) {
-      if (content == checkByte) {
-        return true;
-      }
+  public boolean containsByte(byte inputByte) {
+    for (byte b : contents) {
+      if (b == inputByte) return true;
     }
-
     return false;
   }
 
